@@ -6,13 +6,13 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2015/12/28 15:21:00 by tmanet           ###   ########.fr       */
+/*   Updated: 2015/12/28 16:26:16 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static t_file_mem	*ft_newfmem(int const fd, t_file_mem *fmem)
+static t_file_mem		*ft_newfmem(int const fd, t_file_mem *fmem)
 {
 	t_file_mem	*cfmem;
 	t_file_mem	*last_fmem;
@@ -30,6 +30,24 @@ static t_file_mem	*ft_newfmem(int const fd, t_file_mem *fmem)
 		last_fmem->next = cfmem;
 	}
 	return (cfmem);
+}
+
+static int				ft_read_buf(t_list *lst, int fd)
+{
+	t_list	*elem;
+	char	buf[BUFF_SIZE];
+	size_t	ret;
+	char	*str;
+
+	elem = lst;
+	while (elem->next)
+		elem = elem->next;
+	ret = read(fd, buf, BUFF_SIZE);
+	if (ret <= 0)
+		return (ret);
+	str = ft_strnew(ret);
+	elem->next = ft_lstnew(ft_memcpy(str, buf, ret), ret);
+	return (ret);
 }
 
 static size_t			ft_line_size(t_list *lst, int complete)
@@ -55,12 +73,19 @@ static size_t			ft_line_size(t_list *lst, int complete)
 	return (size * complete);
 }
 
+static int			ft_ret_line(char **line, t_file_mem *cfmem)
+{
+
+
+	return (0);
+}
+
 int					get_next_line(int const fd, char **line)
 {
 	static t_file_mem	*fmem;
 	t_file_mem			*cfmem;
-	char				buf[BUFF_SIZE + 1];
 	int					comp;
+	int					read_ret;
 	size_t				size;
 
 	cfmem = fmem;
@@ -72,8 +97,12 @@ int					get_next_line(int const fd, char **line)
 			return (-1);
 	while (!(size = ft_line_size(cfmem->lst, comp)))
 	{
-		size++;
+		read_ret = ft_line_size(cfmem->lst, fd);
+		if (read_ret < 0)
+			return (-1);
+		else if (read_ret == 0)
+			comp = 1;
 	}
-
-	return (0);
+	*line = ft_strnew(size);
+	return (ft_ret_line(line, cfmem));
 }
