@@ -73,9 +73,11 @@ static size_t			ft_line_size(t_list *lst, int complete)
 	return (size * complete);
 }
 
-static int			ft_ret_line(char **line, t_file_mem *cfmem)
+static int			ft_ret_line(char **line, t_file_mem *cfmem, size_t size)
 {
+	int	i;
 
+	i = 0;
 
 	return (0);
 }
@@ -88,8 +90,8 @@ int					get_next_line(int const fd, char **line)
 	int					read_ret;
 	size_t				size;
 
-	cfmem = fmem;
 	comp = 0;
+	cfmem = fmem;
 	while (cfmem && cfmem->fd != fd)
 		cfmem = cfmem->next;
 	if (!cfmem)
@@ -97,12 +99,12 @@ int					get_next_line(int const fd, char **line)
 			return (-1);
 	while (!(size = ft_line_size(cfmem->lst, comp)))
 	{
-		read_ret = ft_line_size(cfmem->lst, fd);
+		read_ret = ft_read_buf(cfmem->lst, fd);
 		if (read_ret < 0)
 			return (-1);
 		else if (read_ret == 0)
 			comp = 1;
 	}
 	*line = ft_strnew(size);
-	return (ft_ret_line(line, cfmem));
+	return (ft_ret_line(line, cfmem, size));
 }

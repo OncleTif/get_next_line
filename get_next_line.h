@@ -23,6 +23,7 @@ int						get_next_line(int const fd, char **line);
 typedef struct			s_file_mem
 {
 	int					fd;
+	int					offset;
 	t_list				*lst;
 	struct s_file_mem	*next;
 }						t_file_mem;
