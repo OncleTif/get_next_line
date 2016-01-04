@@ -24,6 +24,7 @@ void					ft_print_lst(t_list *lst);
 typedef struct			s_file_mem
 {
 	int					fd;
+	int				eof;
 	t_list				*lst;
 	size_t				offset;
 	struct s_file_mem	*next;
