@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:54:38 by tmanet            #+#    #+#             */
-/*   Updated: 2015/12/28 14:35:37 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/04 14:34:22 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,16 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include "libft/libft.h"
-# define BUFF_SIZE 32
+# define BUFF_SIZE 4
 
 int						get_next_line(int const fd, char **line);
+void					ft_print_lst(t_list *lst);
 
 typedef struct			s_file_mem
 {
 	int					fd;
-	int					offset;
 	t_list				*lst;
+	size_t				offset;
 	struct s_file_mem	*next;
 }						t_file_mem;
 
