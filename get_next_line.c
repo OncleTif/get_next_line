@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/05 15:31:16 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/05 15:53:02 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,5 +130,5 @@ int			get_next_line(int const fd, char **line)
 		else if (read_ret == 0)
 			cfmem->eof = 1;
 	}
-	return (ft_ret_line(line, cfmem, size, eof));
+	return (ft_ret_line(line, cfmem, size, cfmem->eof));
 }
