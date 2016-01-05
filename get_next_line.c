@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/04 17:29:23 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/05 15:31:16 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,13 +110,11 @@ int			get_next_line(int const fd, char **line)
 {
 	static t_file_mem	*fmem;
 	t_file_mem			*cfmem;
-	int					eof;
 	int					read_ret;
 	size_t				size;
 
 	if (!line)
 		return (-1);
-	eof = 0;
 	cfmem = fmem;
 	while (cfmem && cfmem->fd != fd)
 		cfmem = cfmem->next;
@@ -124,13 +122,13 @@ int			get_next_line(int const fd, char **line)
 		if (!(cfmem = ft_newfmem(fd, &fmem)))
 			return (-1);
 
-	while (!ft_line_size(cfmem->lst, eof, cfmem->offset, &size))
+	while (!ft_line_size(cfmem->lst, cfmem->eof, cfmem->offset, &size))
 	{
 		read_ret = ft_read_buf(cfmem->lst, fd);
 		if (read_ret < 0)
 			return (-1);
 		else if (read_ret == 0)
-			eof = 1;
+			cfmem->eof = 1;
 	}
 	return (ft_ret_line(line, cfmem, size, eof));
 }
