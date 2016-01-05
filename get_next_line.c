@@ -51,13 +51,15 @@ static int				ft_read_buf(t_list *lst, int fd)
 	return (ret);
 }
 
-static size_t	ft_line_size(t_list *lst, int eof, size_t offset, size_t *size)
+static size_t	ft_line_size(t_file_mem *cfmem, size_t *size)
 {
 	size_t	i;
 	char	*str;
+	t_list	*lst;
 
+	lst = cfmem->lst;
 	*size = 0;
-	i = offset;
+	i = cfmem->offset;
 	while (lst)
 	{
 		str = (char*)lst->content;
@@ -71,10 +73,10 @@ static size_t	ft_line_size(t_list *lst, int eof, size_t offset, size_t *size)
 		lst = lst->next;
 		i = 0;
 	}
-	return (eof);
+	return (cfmem->eof);
 }
 
-static int		ft_ret_line(char **line, t_file_mem *cf, size_t size, int eof)
+static int		ft_ret_line(char **line, t_file_mem *cf, size_t size)
 {
 	size_t	j;
 	size_t	k;
@@ -103,7 +105,7 @@ static int		ft_ret_line(char **line, t_file_mem *cf, size_t size, int eof)
 			cf->offset = k % cf->lst->content_size;
 	}
 	cf->offset++;
-	return (!eof);
+	return (!(cf->eof));
 }
 
 int			get_next_line(int const fd, char **line)
@@ -122,7 +124,7 @@ int			get_next_line(int const fd, char **line)
 		if (!(cfmem = ft_newfmem(fd, &fmem)))
 			return (-1);
 
-	while (!ft_line_size(cfmem->lst, cfmem->eof, cfmem->offset, &size))
+	while (!ft_line_size(cfmem, &size))
 	{
 		read_ret = ft_read_buf(cfmem->lst, fd);
 		if (read_ret < 0)
@@ -130,5 +132,5 @@ int			get_next_line(int const fd, char **line)
 		else if (read_ret == 0)
 			cfmem->eof = 1;
 	}
-	return (ft_ret_line(line, cfmem, size, cfmem->eof));
+	return (ft_ret_line(line, cfmem, size));
 }
