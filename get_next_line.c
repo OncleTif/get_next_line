@@ -6,13 +6,13 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/05 15:53:02 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/06 11:26:39 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static t_file_mem		*ft_newfmem(int const fd, t_file_mem **fmem)
+static t_file_mem	*ft_newfmem(int const fd, t_file_mem **fmem)
 {
 	t_file_mem	*cfmem;
 	t_file_mem	*last_fmem;
@@ -35,30 +35,41 @@ static t_file_mem		*ft_newfmem(int const fd, t_file_mem **fmem)
 	return (cfmem);
 }
 
-static int				ft_read_buf(t_list *lst, int fd)
+static int			ft_read_buf(t_file_mem *cfmem)
 {
 	t_list	*elem;
 	char	buf[BUFF_SIZE + 1];
-	size_t	ret;
+	int		ret;
+	int		i;
 
-	elem = lst;
+	i = 0;
+	elem = cfmem->lst;
 	while (elem->next)
 		elem = elem->next;
-	ret = read(fd, buf, BUFF_SIZE);
-	if (ret <= 0)
+	ret = read(cfmem->fd, buf, BUFF_SIZE);
+	if (ret == -1)
 		return (ret);
 	elem->next = ft_lstnew(buf, ret);
-	return (ret);
+	while (i < ret)
+	{
+		if (buf[i] == '\n')
+			return (1);
+		i++;
+	}
+	if (!ret)
+		cfmem->eof = 1;
+	return (!ret);
 }
 
-static size_t	ft_line_size(t_file_mem *cfmem, size_t *size)
+static size_t		ft_line_size(t_file_mem *cfmem)
 {
 	size_t	i;
+	size_t	size;
 	char	*str;
 	t_list	*lst;
 
 	lst = cfmem->lst;
-	*size = 0;
+	size = 0;
 	i = cfmem->offset;
 	while (lst)
 	{
@@ -66,17 +77,17 @@ static size_t	ft_line_size(t_file_mem *cfmem, size_t *size)
 		while (i < lst->content_size)
 		{
 			if (str[i] == '\n')
-				return (1);
+				return (size);
 			i++;
-			*size = *size + 1;
+			size++;
 		}
 		lst = lst->next;
 		i = 0;
 	}
-	return (cfmem->eof);
+	return (size * cfmem->eof);
 }
 
-static int		ft_ret_line(char **line, t_file_mem *cf, size_t size)
+static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 {
 	size_t	j;
 	size_t	k;
@@ -108,13 +119,14 @@ static int		ft_ret_line(char **line, t_file_mem *cf, size_t size)
 	return (!(cf->eof));
 }
 
-int			get_next_line(int const fd, char **line)
+int					get_next_line(int const fd, char **line)
 {
 	static t_file_mem	*fmem;
 	t_file_mem			*cfmem;
-	int					read_ret;
+	int					found;
 	size_t				size;
 
+	found = 0;
 	if (!line)
 		return (-1);
 	cfmem = fmem;
@@ -123,14 +135,13 @@ int			get_next_line(int const fd, char **line)
 	if (!cfmem)
 		if (!(cfmem = ft_newfmem(fd, &fmem)))
 			return (-1);
-
-	while (!ft_line_size(cfmem, &size))
+	size = ft_line_size(cfmem);
+	while (!found && !cfmem->eof && !size)
 	{
-		read_ret = ft_read_buf(cfmem->lst, fd);
-		if (read_ret < 0)
+		found = ft_read_buf(cfmem);
+		if (found == -1)
 			return (-1);
-		else if (read_ret == 0)
-			cfmem->eof = 1;
 	}
+	size = ft_line_size(cfmem);
 	return (ft_ret_line(line, cfmem, size));
 }

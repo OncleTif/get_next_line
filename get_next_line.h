@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:54:38 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/05 15:46:37 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/06 11:23:03 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include "libft/libft.h"
-# define BUFF_SIZE 4
+# define BUFF_SIZE 456
 
 int						get_next_line(int const fd, char **line);
 void					ft_print_lst(t_list *lst);
