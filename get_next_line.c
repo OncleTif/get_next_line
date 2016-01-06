@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/06 11:26:39 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/06 12:26:22 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static int			ft_read_buf(t_file_mem *cfmem)
 	return (!ret);
 }
 
-static size_t		ft_line_size(t_file_mem *cfmem)
+static size_t		ft_line_size(t_file_mem *cfmem, int *found)
 {
 	size_t	i;
 	size_t	size;
@@ -77,7 +77,10 @@ static size_t		ft_line_size(t_file_mem *cfmem)
 		while (i < lst->content_size)
 		{
 			if (str[i] == '\n')
+			{
+				*found = 1;
 				return (size);
+			}
 			i++;
 			size++;
 		}
@@ -112,10 +115,9 @@ static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 			cf->lst = next;
 			cf->offset = 0;
 		}
-		else
-			cf->offset = k % cf->lst->content_size;
 	}
-	cf->offset++;
+	if (cf->lst)
+	cf->offset = (k  + cf->offset + 1);
 	return (!(cf->eof));
 }
 
@@ -135,13 +137,16 @@ int					get_next_line(int const fd, char **line)
 	if (!cfmem)
 		if (!(cfmem = ft_newfmem(fd, &fmem)))
 			return (-1);
-	size = ft_line_size(cfmem);
-	while (!found && !cfmem->eof && !size)
+	ft_putstr("offset : ");
+	ft_putnbr(cfmem->offset);
+	size = ft_line_size(cfmem, &found);
+	while (!found && !cfmem->eof)
 	{
+		ft_putendl("appel de read");
 		found = ft_read_buf(cfmem);
 		if (found == -1)
 			return (-1);
 	}
-	size = ft_line_size(cfmem);
+	size = ft_line_size(cfmem, &found);
 	return (ft_ret_line(line, cfmem, size));
 }

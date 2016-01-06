@@ -6,7 +6,7 @@
 #    By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/01/06 10:58:59 by tmanet            #+#    #+#              #
-#    Updated: 2016/01/06 11:14:22 by tmanet           ###   ########.fr        #
+#    Updated: 2016/01/06 12:04:44 by tmanet           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,10 +27,16 @@ $(LIB) :
 	gcc -Wall -Wextra -Werror -I libft/includes -c $<
 
 clean:
-	make -C libft/ fclean
 	rm -rf $(OBJ)
 
 fclean: clean
 	rm -rf $(NAME)
 
 re : fclean all
+
+cleanlib:
+	make -C libft/ fclean
+
+relib: cleanall all
+
+cleanall: cleanlib fclean
