@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:54:38 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/07 13:04:30 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/07 13:59:46 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # define BUFF_SIZE 4
 
 int						get_next_line(int const fd, char **line);
-void					ft_printlst(t_list *lst);
 
 typedef struct			s_file_mem
 {
