@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/07 14:02:02 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/07 16:33:50 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static int			ft_read_buf(t_file_mem *cfmem)
 	int		ret;
 	int		i;
 
+//	ft_putendl("appel de read");
 	i = 0;
 	if (!cfmem->lst)
 		cfmem->lst = ft_lstnew(NULL, 0);
@@ -52,6 +53,7 @@ static int			ft_read_buf(t_file_mem *cfmem)
 	if (ret == -1)
 		return (ret);
 	elem->next = ft_lstnew(buf, ret);
+//	ft_printlst(elem->next);
 	while (i < ret)
 	{
 		if (buf[i] == '\n')
@@ -98,6 +100,7 @@ static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 	t_list	*next;
 
 	j = 0;
+//	ft_printlst(cf->lst);
 	*line = ft_strnew(size);
 	if (!*line)
 		return (-1);
@@ -111,8 +114,11 @@ static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 		cf->lst = next;
 	}
 	ft_memcpy(*line + j, cf->lst->content, size - j);
-	next = ft_lstnew(cf->lst->content + (size - j) + !cf->eof,
-			cf->lst->content_size - (size - j) - !cf->eof);
+	if (!(next = ft_lstnew(cf->lst->content + (size - j) + !cf->eof,
+			cf->lst->content_size - (size - j) - !cf->eof)))
+		next = cf->lst->next;
+//	ft_printlst(cf->lst);
+//	ft_printlst(next);
 	free(cf->lst->content);
 	free(cf->lst);
 	cf->lst = next;
