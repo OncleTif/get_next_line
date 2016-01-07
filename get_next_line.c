@@ -104,8 +104,9 @@ static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 	*line = ft_strnew(size);
 	if (!*line)
 		return (-1);
-	while (size - j && cf->lst->content_size <= size - j)
+	while ((size - j || cf->lst->next) && cf->lst->content_size <= size - j)
 	{
+	//	ft_putendl("buf sans retour");
 		ft_memcpy(*line + j, cf->lst->content, cf->lst->content_size);
 		j = j + cf->lst->content_size;
 		free(cf->lst->content);
@@ -115,7 +116,7 @@ static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 	}
 	ft_memcpy(*line + j, cf->lst->content, size - j);
 	if (!(next = ft_lstnew(cf->lst->content + (size - j) + !cf->eof,
-			cf->lst->content_size - (size - j) - !cf->eof)) && !cf->lst->content_size)
+			cf->lst->content_size - (size - j) - !cf->eof)))
 		next = cf->lst->next;
 //	ft_printlst(cf->lst);
 //	ft_printlst(next);
