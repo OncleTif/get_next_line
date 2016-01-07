@@ -115,7 +115,7 @@ static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 	}
 	ft_memcpy(*line + j, cf->lst->content, size - j);
 	if (!(next = ft_lstnew(cf->lst->content + (size - j) + !cf->eof,
-			cf->lst->content_size - (size - j) - !cf->eof)))
+			cf->lst->content_size - (size - j) - !cf->eof)) && !cf->lst->content_size)
 		next = cf->lst->next;
 //	ft_printlst(cf->lst);
 //	ft_printlst(next);
