@@ -14,15 +14,16 @@
 
 void	ft_printlst(t_list	*lst)
 {
-	char	*str;
 	if (!lst)
 		ft_putendl("not a lst");
 	else
 	{
 		ft_putstr("lst content size : ");
 		ft_putnbrendl(lst->content_size);
-		ft_putstr("lst content size : ");
+		ft_putstr("lst content size : \"");
 		ft_putnstr(lst->content, lst->content_size);
-		ft_putchar('\n');
+		ft_putendl("\"");
+		ft_putstr("lst next : ");
+		ft_putnbrendl((long)lst->next);
 	}
 }
