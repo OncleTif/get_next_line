@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/06 12:26:22 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/07 13:05:37 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ static int			ft_read_buf(t_file_mem *cfmem)
 	int		i;
 
 	i = 0;
+	if (!cfmem->lst)
+		cfmem->lst = ft_lstnew(NULL, 0);
 	elem = cfmem->lst;
 	while (elem->next)
 		elem = elem->next;
@@ -70,7 +72,7 @@ static size_t		ft_line_size(t_file_mem *cfmem, int *found)
 
 	lst = cfmem->lst;
 	size = 0;
-	i = cfmem->offset;
+	i = 0;
 	while (lst)
 	{
 		str = (char*)lst->content;
@@ -93,31 +95,27 @@ static size_t		ft_line_size(t_file_mem *cfmem, int *found)
 static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 {
 	size_t	j;
-	size_t	k;
 	t_list	*next;
 
 	j = 0;
 	*line = ft_strnew(size);
 	if (!*line)
 		return (-1);
-	while (j < size)
+	while (size - j && cf->lst->content_size <= size - j)
 	{
-		k = cf->lst->content_size - cf->offset;
-		if (k > size - j)
-			k = size - j;
-		ft_memcpy(*line + j, cf->lst->content + cf->offset, k);
-		j = j + k;
-		if (cf->lst->content_size - cf->offset == k)
-		{
-			next = cf->lst->next;
-			free(cf->lst->content);
-			free(cf->lst);
-			cf->lst = next;
-			cf->offset = 0;
-		}
+		ft_memcpy(*line + j, cf->lst->content, cf->lst->content_size);
+		j = j + cf->lst->content_size;
+		free(cf->lst->content);
+		next = cf->lst->next;
+		free(cf->lst);
+		cf->lst = next;
 	}
-	if (cf->lst)
-	cf->offset = (k  + cf->offset + 1);
+	ft_memcpy(*line + j, cf->lst->content, size - j);
+	next = ft_lstnew(cf->lst->content + (size - j) + !cf->eof,
+			cf->lst->content_size - (size - j) - !cf->eof);
+	free(cf->lst->content);
+	free(cf->lst);
+	cf->lst = next;
 	return (!(cf->eof));
 }
 
@@ -137,12 +135,9 @@ int					get_next_line(int const fd, char **line)
 	if (!cfmem)
 		if (!(cfmem = ft_newfmem(fd, &fmem)))
 			return (-1);
-	ft_putstr("offset : ");
-	ft_putnbr(cfmem->offset);
 	size = ft_line_size(cfmem, &found);
 	while (!found && !cfmem->eof)
 	{
-		ft_putendl("appel de read");
 		found = ft_read_buf(cfmem);
 		if (found == -1)
 			return (-1);
