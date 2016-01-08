@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/08 12:09:20 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/08 12:24:12 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int					get_next_line(int const fd, char **line)
 	size_t				size;
 
 	found = 0;
-	if (!line)
+	if (!line || !BUFF_SIZE)
 		return (-1);
 	cfmem = fmem;
 	while (cfmem && cfmem->fd != fd)
