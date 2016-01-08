@@ -6,7 +6,7 @@
 /*   By: tmanet <tmanet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 10:47:35 by tmanet            #+#    #+#             */
-/*   Updated: 2016/01/08 12:26:48 by tmanet           ###   ########.fr       */
+/*   Updated: 2016/01/08 15:37:20 by tmanet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ static int			ft_ret_line(char **line, t_file_mem *cf, size_t size)
 	free(cf->lst->content);
 	free(cf->lst);
 	cf->lst = next;
-	return (!(cf->eof) || size);
+	return (!(cf->eof) || (cf->eof = 0));
 }
 
 int					get_next_line(int const fd, char **line)
